@@ -100,35 +100,52 @@ function App() {
           Оформить заказ
         </button>
       </form>
-      <div className={resultClassName}>Ваш заказ оформлен. Спасибо!</div>
-      <div className={resultClassName}>Поступил новый заказ</div>
-      <button type="button" onClick={show}></button>
       <div>
         <h3>Результат</h3>
-        <div>
-          <div>
-            <p>id</p>
-            <p></p>
-          </div>
-          <div>
-            <p>event_id</p>
-          </div>
-          <div>
-            <p>ticket_adult_quantity</p>
-          </div>
-          <div>
-            <p>ticket_kid_quantity</p>
-          </div>
-          <div>
-            <p>ticket_adult_price</p>
-          </div>
-          <div>
-            <p>baracode</p>
-          </div>
-          <div>
-            <p>created</p>
-          </div>
-        </div>
+        {phpMyAdmin.length > 0
+          ? phpMyAdmin.map((item) => {
+              return (
+                <div key={item.id} className="result">
+                  <div className="result__item">
+                    <p>id</p>
+                    <p>{item.id}</p>
+                  </div>
+                  <div className="result__item">
+                    <p>event_id</p>
+                    <p>{item.event_id}</p>
+                  </div>
+                  <div className="result__item">
+                    <p>event_date</p>
+                    <p>{item.event_date}</p>
+                  </div>
+                  <div className="result__item">
+                    <p>ticket_adult_quantity</p>
+                    <p>{item.ticket_adult_quantity}</p>
+                  </div>
+                  <div className="result__item">
+                    <p>ticket_adult_price</p>
+                    <p>{item.ticket_adult_price}</p>
+                  </div>
+                  <div className="result__item">
+                    <p>ticket_kid_quantity</p>
+                    <p>{item.ticket_kid_quantity}</p>
+                  </div>
+                  <div className="result__item">
+                    <p>ticket_kid_price</p>
+                    <p>{item.ticket_kid_price}</p>
+                  </div>
+                  <div className="result__item">
+                    <p>baracode</p>
+                    <p>{}</p>
+                  </div>
+                  <div className="result__item">
+                    <p>created</p>
+                    <p>{item.created}</p>
+                  </div>
+                </div>
+              );
+            })
+          : 0}
       </div>
     </div>
   );

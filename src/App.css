@@ -32,14 +32,16 @@
 .form__button {
   cursor: pointer;
 }
-.result-hidden {
-  visibility: hidden;
-}
-.result-visible {
-  visibility: visible;
-  margin: 10px;
+
+.result {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  border: 2px solid black;
+  margin: 0;
 }
 
-.result__admin {
-  visibility: hidden;
+.result__item {
+  display: flex;
+  flex-direction: column;
 }
