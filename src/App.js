@@ -2,32 +2,69 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
-  const adultTicketPrice = 1000;
-  const kidsTicketPrice = 500;
   const [createdOrder, setCreatedOrder] = useState(false);
-  const [adultTickets, setAdultTickets] = useState(0);
-  const [kidsTickets, setKidsTickets] = useState(0);
+  const [adultTicketsQuantity, setAdultTicketsQuantity] = useState(0);
+  const adultTicketPrice = 1000;
+  const [kidTicketsQuantity, setKidTicketsQuantity] = useState(0);
+  const kidTicketPrice = 500;
+  const [id, setId] = useState(0);
+  const [eventId, setEventId] = useState(1000);
+  const [newOrder, setNewOrder] = useState(null);
+  const [phpMyAdmin, setPhpMyAdmin] = useState([]);
   const resultClassName = !createdOrder ? "result-hidden" : "result-visible";
-  let resultAdmin = [];
-  let resultClient = [];
-  // фунция сборщик заказа
 
-  console.log(`Adults ${adultTickets}`);
-  console.log(`Kids ${kidsTickets}`);
-
-  function addOrder(e) {
-    e.preventDefault();
-    console.log(e.target.value);
+  // функция считыватель количества билетов
+  function eventDate() {
+    if (adultTicketsQuantity > 0 || kidTicketsQuantity > 0) {
+      const date = new Date().toLocaleDateString();
+      const time = new Date().toLocaleTimeString();
+      const eventDate = date + " " + time;
+      return eventDate;
+    }
   }
 
-  function handleSubmit(e) {
-    setCreatedOrder(true);
-    addOrder(e);
+  // фунция сборщик одного билета
+  function createTicket() {
+    let ticket = {};
+
+    return ticket;
+  }
+
+  const newItem = () => {
+    return newOrder;
+  };
+
+  const handelChangeAdult = (e) => {
+    setAdultTicketsQuantity(e.target.value);
+  };
+
+  const handelChangeKid = (e) => {
+    setKidTicketsQuantity(e.target.value);
+  };
+
+  // функция добавления заказа в базу
+  const createOrder = () => {
+    let order = {};
+    setId(id + 1);
+    order.id = id;
+    order.event_date = eventDate();
+    order.ticket_adult_quantity = adultTicketsQuantity;
+    order.ticket_kid_quantity = kidTicketsQuantity;
+    order.ticket_adult_price = 1000;
+    order.ticket_kid_price = 500;
+    setNewOrder(order);
+    setPhpMyAdmin([...phpMyAdmin, order]);
+  };
+
+  function handleSubmit(e) {}
+
+  function show() {
+    console.log(phpMyAdmin);
   }
 
   return (
     <div className="App">
-      <form className="form" onSubmit={handleSubmit}>
+      <form className="form">
         <h3>Выберите необходимое количество и вид билетов</h3>
         <div className="form__category">
           <div className="form__category-info">
@@ -36,29 +73,29 @@ function App() {
           </div>
           <input
             type="number"
-            min="0"
             placeholder="Введите количество"
-            onChange={({ target: { value } }) => setAdultTickets(value)}
+            onChange={handelChangeAdult}
           ></input>
         </div>
         <div className="form__category">
           <div className="form__category-info">
             <p>Количество билетов для Детей</p>
-            <p>Стоимость 1 билета: {kidsTicketPrice} руб</p>
+            <p>Стоимость 1 билета: {kidTicketPrice} руб</p>
           </div>
           <input
             type="number"
             min="0"
             placeholder="Введите количество"
-            onChange={({ target: { value } }) => setKidsTickets(value)}
+            onChange={handelChangeKid}
           ></input>
         </div>
-        <button type="submit" className="form__button">
+        <button type="button" className="form__button" onClick={createOrder}>
           Оформить заказ
         </button>
       </form>
       <div className={resultClassName}>Ваш заказ оформлен. Спасибо!</div>
       <div className={resultClassName}>Поступил новый заказ</div>
+      <button type="button" onClick={show}></button>
     </div>
   );
 }

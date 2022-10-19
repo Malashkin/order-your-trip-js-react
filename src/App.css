@@ -2,6 +2,19 @@
   text-align: center;
 }
 
+.route {
+  display: flex;
+  justify-content: center;
+}
+
+.route__option {
+  margin: 0 10px;
+}
+
+.route__option-lable {
+  margin-right: 10px;
+}
+
 .form {
   display: flex;
   flex-direction: column;
