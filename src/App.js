@@ -8,8 +8,9 @@ function App() {
   const [kidTicketsQuantity, setKidTicketsQuantity] = useState(0);
   const kidTicketPrice = 500;
   const [id, setId] = useState(0);
-  const [eventId, setEventId] = useState(1000);
+  const [eventId, setEventId] = useState(477);
   const [newOrder, setNewOrder] = useState(null);
+  const [timeOfCreation, setTimeOfCreation] = useState(null);
   const [phpMyAdmin, setPhpMyAdmin] = useState([]);
   const resultClassName = !createdOrder ? "result-hidden" : "result-visible";
 
@@ -18,9 +19,14 @@ function App() {
     if (adultTicketsQuantity > 0 || kidTicketsQuantity > 0) {
       const date = new Date().toLocaleDateString();
       const time = new Date().toLocaleTimeString();
-      const eventDate = date + " " + time;
-      return eventDate;
+      return setTimeOfCreation(date + " " + time);
     }
+  }
+
+  function createdTime() {
+    const date = new Date().toLocaleDateString();
+    const time = new Date().toLocaleTimeString();
+    return date + " " + time;
   }
 
   // фунция сборщик одного билета
@@ -29,10 +35,6 @@ function App() {
 
     return ticket;
   }
-
-  const newItem = () => {
-    return newOrder;
-  };
 
   const handelChangeAdult = (e) => {
     setAdultTicketsQuantity(e.target.value);
@@ -47,11 +49,14 @@ function App() {
     let order = {};
     setId(id + 1);
     order.id = id;
-    order.event_date = eventDate();
+    setEventId(eventId + 1);
+    order.event_id = eventId;
+    order.event_date = createdTime();
     order.ticket_adult_quantity = adultTicketsQuantity;
     order.ticket_kid_quantity = kidTicketsQuantity;
-    order.ticket_adult_price = 1000;
-    order.ticket_kid_price = 500;
+    order.ticket_adult_price = adultTicketPrice;
+    order.ticket_kid_price = kidTicketPrice;
+    order.created = timeOfCreation;
     setNewOrder(order);
     setPhpMyAdmin([...phpMyAdmin, order]);
   };
@@ -75,6 +80,7 @@ function App() {
             type="number"
             placeholder="Введите количество"
             onChange={handelChangeAdult}
+            onClick={eventDate}
           ></input>
         </div>
         <div className="form__category">
@@ -87,6 +93,7 @@ function App() {
             min="0"
             placeholder="Введите количество"
             onChange={handelChangeKid}
+            onClick={eventDate}
           ></input>
         </div>
         <button type="button" className="form__button" onClick={createOrder}>
@@ -96,6 +103,33 @@ function App() {
       <div className={resultClassName}>Ваш заказ оформлен. Спасибо!</div>
       <div className={resultClassName}>Поступил новый заказ</div>
       <button type="button" onClick={show}></button>
+      <div>
+        <h3>Результат</h3>
+        <div>
+          <div>
+            <p>id</p>
+            <p></p>
+          </div>
+          <div>
+            <p>event_id</p>
+          </div>
+          <div>
+            <p>ticket_adult_quantity</p>
+          </div>
+          <div>
+            <p>ticket_kid_quantity</p>
+          </div>
+          <div>
+            <p>ticket_adult_price</p>
+          </div>
+          <div>
+            <p>baracode</p>
+          </div>
+          <div>
+            <p>created</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
