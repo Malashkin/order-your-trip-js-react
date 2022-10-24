@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import BaracodeScaner from "./BaracodeScaner";
 
 function App() {
   const [adultTicketsQuantity, setAdultTicketsQuantity] = useState(0);
@@ -57,12 +58,6 @@ function App() {
     setPhpMyAdmin([...phpMyAdmin, order]);
   };
 
-  function handleSubmit(e) {}
-
-  function show() {
-    console.log(phpMyAdmin);
-  }
-
   return (
     <div className="App">
       <form className="form">
@@ -107,7 +102,7 @@ function App() {
           <p className="result__item">ticket_kid_price</p>
           <p className="result__item">ticket_adult_price</p>
           <p className="result__item">ticket_kid_quantity</p>
-          <p className="result__item">baracode</p>
+          <p className="result__item">QRcode</p>
           <p className="result__item">created</p>
         </ul>
         {phpMyAdmin.length > 0
@@ -121,7 +116,9 @@ function App() {
                   <li className="result__item">{item.ticket_adult_price}</li>
                   <li className="result__item">{item.ticket_kid_quantity}</li>
                   <li className="result__item">{item.ticket_kid_price}</li>
-                  <li className="result__item">{}</li>
+                  <li className="result__item">
+                    <BaracodeScaner ticket={item} />
+                  </li>
                   <li className="result__item">{item.created}</li>
                 </ul>
               );
