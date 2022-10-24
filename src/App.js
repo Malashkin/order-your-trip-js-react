@@ -2,17 +2,14 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
-  const [createdOrder, setCreatedOrder] = useState(false);
   const [adultTicketsQuantity, setAdultTicketsQuantity] = useState(0);
   const adultTicketPrice = 1000;
   const [kidTicketsQuantity, setKidTicketsQuantity] = useState(0);
   const kidTicketPrice = 500;
   const [id, setId] = useState(0);
   const [eventId, setEventId] = useState(477);
-  const [newOrder, setNewOrder] = useState(null);
   const [timeOfCreation, setTimeOfCreation] = useState(null);
   const [phpMyAdmin, setPhpMyAdmin] = useState([]);
-  const resultClassName = !createdOrder ? "result-hidden" : "result-visible";
 
   // функция считыватель количества билетов
   function eventDate() {
@@ -57,7 +54,6 @@ function App() {
     order.ticket_adult_price = adultTicketPrice;
     order.ticket_kid_price = kidTicketPrice;
     order.created = timeOfCreation;
-    setNewOrder(order);
     setPhpMyAdmin([...phpMyAdmin, order]);
   };
 
@@ -78,6 +74,7 @@ function App() {
           </div>
           <input
             type="number"
+            min="0"
             placeholder="Введите количество"
             onChange={handelChangeAdult}
             onClick={eventDate}
@@ -102,47 +99,31 @@ function App() {
       </form>
       <div>
         <h3>Результат</h3>
+        <ul className="result">
+          <p className="result__item">id</p>
+          <p className="result__item">event_id</p>
+          <p className="result__item">event_date</p>
+          <p className="result__item">ticket_adult_quantity</p>
+          <p className="result__item">ticket_kid_price</p>
+          <p className="result__item">ticket_adult_price</p>
+          <p className="result__item">ticket_kid_quantity</p>
+          <p className="result__item">baracode</p>
+          <p className="result__item">created</p>
+        </ul>
         {phpMyAdmin.length > 0
           ? phpMyAdmin.map((item) => {
               return (
-                <div key={item.id} className="result">
-                  <div className="result__item">
-                    <p>id</p>
-                    <p>{item.id}</p>
-                  </div>
-                  <div className="result__item">
-                    <p>event_id</p>
-                    <p>{item.event_id}</p>
-                  </div>
-                  <div className="result__item">
-                    <p>event_date</p>
-                    <p>{item.event_date}</p>
-                  </div>
-                  <div className="result__item">
-                    <p>ticket_adult_quantity</p>
-                    <p>{item.ticket_adult_quantity}</p>
-                  </div>
-                  <div className="result__item">
-                    <p>ticket_adult_price</p>
-                    <p>{item.ticket_adult_price}</p>
-                  </div>
-                  <div className="result__item">
-                    <p>ticket_kid_quantity</p>
-                    <p>{item.ticket_kid_quantity}</p>
-                  </div>
-                  <div className="result__item">
-                    <p>ticket_kid_price</p>
-                    <p>{item.ticket_kid_price}</p>
-                  </div>
-                  <div className="result__item">
-                    <p>baracode</p>
-                    <p>{}</p>
-                  </div>
-                  <div className="result__item">
-                    <p>created</p>
-                    <p>{item.created}</p>
-                  </div>
-                </div>
+                <ul key={item.id} className="result">
+                  <li className="result__item">{item.id}</li>
+                  <li className="result__item">{item.event_id}</li>
+                  <li className="result__item">{item.event_date}</li>
+                  <li className="result__item">{item.ticket_adult_quantity}</li>
+                  <li className="result__item">{item.ticket_adult_price}</li>
+                  <li className="result__item">{item.ticket_kid_quantity}</li>
+                  <li className="result__item">{item.ticket_kid_price}</li>
+                  <li className="result__item">{}</li>
+                  <li className="result__item">{item.created}</li>
+                </ul>
               );
             })
           : 0}

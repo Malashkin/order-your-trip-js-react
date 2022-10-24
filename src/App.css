@@ -36,12 +36,15 @@
 .result {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
-  border: 2px solid black;
+  list-style-type: none;
+  border: 1px solid black;
   margin: 0;
 }
 
+.result:first-of-type {
+  border: 2px solid black;
+}
+
 .result__item {
-  display: flex;
-  flex-direction: column;
+  width: 170px;
 }
