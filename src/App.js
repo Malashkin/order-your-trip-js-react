@@ -27,13 +27,7 @@ function App() {
     return date + " " + time;
   }
 
-  // фунция сборщик одного билета
-  function createTicket() {
-    let ticket = {};
-
-    return ticket;
-  }
-
+  //считывание данных о количество из inputs
   const handelChangeAdult = (e) => {
     setAdultTicketsQuantity(e.target.value);
   };
@@ -42,7 +36,7 @@ function App() {
     setKidTicketsQuantity(e.target.value);
   };
 
-  // функция добавления заказа в базу
+  // функция для создания заказа
   const createOrder = () => {
     let order = {};
     setId(id + 1);
@@ -50,12 +44,38 @@ function App() {
     setEventId(eventId + 1);
     order.event_id = eventId;
     order.event_date = createdTime();
-    order.ticket_adult_quantity = adultTicketsQuantity;
-    order.ticket_kid_quantity = kidTicketsQuantity;
+    order.tickets_adult_quantity = adultTicketsQuantity;
+    order.tickets_kid_quantity = kidTicketsQuantity;
     order.ticket_adult_price = adultTicketPrice;
     order.ticket_kid_price = kidTicketPrice;
     order.created = timeOfCreation;
     setPhpMyAdmin([...phpMyAdmin, order]);
+  };
+
+  // фунция сборщик каждого взрослого билета
+  const createAdultTickets = (data) => {
+    if (data.tickets_adult_quantity > 0) {
+      for (let i = 1; i <= data.tickets_adult_quantity; i++) {
+        let ticket = {};
+        ticket.id = data.event_id + i;
+        ticket.type = "Adult";
+        ticket.price = data.ticket_adult_price;
+        console.log(ticket);
+      }
+    }
+  };
+
+  // фунция сборщик каждого взрослого билета
+  const createKidTickets = (data) => {
+    if (data.tickets_kid_quantity > 0) {
+      for (let i = 1; i <= data.tickets_kid_quantity; i++) {
+        let ticket = {};
+        ticket.id = data.event_id + i;
+        ticket.type = "Kids";
+        ticket.price = data.ticket_kid_price;
+        console.log(ticket);
+      }
+    }
   };
 
   return (
@@ -70,6 +90,7 @@ function App() {
           <input
             type="number"
             min="0"
+            defaultValue="0"
             placeholder="Введите количество"
             onChange={handelChangeAdult}
             onClick={eventDate}
@@ -83,6 +104,7 @@ function App() {
           <input
             type="number"
             min="0"
+            defaultValue="0"
             placeholder="Введите количество"
             onChange={handelChangeKid}
             onClick={eventDate}
@@ -100,8 +122,8 @@ function App() {
           <p className="result__item">event_date</p>
           <p className="result__item">ticket_adult_quantity</p>
           <p className="result__item">ticket_kid_price</p>
-          <p className="result__item">ticket_adult_price</p>
           <p className="result__item">ticket_kid_quantity</p>
+          <p className="result__item">ticket_adult_price</p>
           <p className="result__item">QRcode</p>
           <p className="result__item">created</p>
         </ul>
@@ -112,18 +134,28 @@ function App() {
                   <li className="result__item">{item.id}</li>
                   <li className="result__item">{item.event_id}</li>
                   <li className="result__item">{item.event_date}</li>
-                  <li className="result__item">{item.ticket_adult_quantity}</li>
+                  <li
+                    className="result__item"
+                    onClick={() => createAdultTickets(item)}
+                  >
+                    {item.tickets_adult_quantity}
+                  </li>
                   <li className="result__item">{item.ticket_adult_price}</li>
-                  <li className="result__item">{item.ticket_kid_quantity}</li>
+                  <li
+                    className="result__item"
+                    onClick={() => createKidTickets(item)}
+                  >
+                    {item.tickets_kid_quantity}
+                  </li>
                   <li className="result__item">{item.ticket_kid_price}</li>
                   <li className="result__item">
-                    <BaracodeScaner ticket={item} />
+                    <BaracodeScaner />
                   </li>
                   <li className="result__item">{item.created}</li>
                 </ul>
               );
             })
-          : 0}
+          : ""}
       </div>
     </div>
   );
