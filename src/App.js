@@ -11,6 +11,10 @@ function App() {
   const [eventId, setEventId] = useState(477);
   const [timeOfCreation, setTimeOfCreation] = useState(null);
   const [phpMyAdmin, setPhpMyAdmin] = useState([]);
+  const [adultsTicketsArray, setAdultsTicketArray] = useState([]);
+  const [kidsTicketsArray, setKidsTicketArray] = useState([]);
+  const first = [];
+  const second = [];
 
   // функция считыватель количества билетов
   function eventDate() {
@@ -56,11 +60,11 @@ function App() {
   const createAdultTickets = (data) => {
     if (data.tickets_adult_quantity > 0) {
       for (let i = 1; i <= data.tickets_adult_quantity; i++) {
-        let ticket = {};
-        ticket.id = data.event_id + i;
+        let ticket = [];
+        ticket.ticket_id = data.event_id + i;
         ticket.type = "Adult";
         ticket.price = data.ticket_adult_price;
-        console.log(ticket);
+        return ticket;
       }
     }
   };
@@ -69,11 +73,10 @@ function App() {
   const createKidTickets = (data) => {
     if (data.tickets_kid_quantity > 0) {
       for (let i = 1; i <= data.tickets_kid_quantity; i++) {
-        let ticket = {};
-        ticket.id = data.event_id + i;
+        let ticket = [];
+        ticket.ticket_id = data.event_id + i;
         ticket.type = "Kids";
         ticket.price = data.ticket_kid_price;
-        console.log(ticket);
       }
     }
   };
@@ -140,6 +143,9 @@ function App() {
                   >
                     {item.tickets_adult_quantity}
                   </li>
+                  {createAdultTickets(item).map((i) => {
+                    return <p>{i.ticket.type}</p>;
+                  })}
                   <li className="result__item">{item.ticket_adult_price}</li>
                   <li
                     className="result__item"
