@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import BaracodeScaner from "./BaracodeScaner";
+import QRCode from "./QRCode";
 
 function App() {
   const [adultTicketsQuantity, setAdultTicketsQuantity] = useState(0);
@@ -51,6 +51,9 @@ function App() {
     order.tickets_kid_quantity = kidTicketsQuantity;
     order.ticket_adult_price = adultTicketPrice;
     order.ticket_kid_price = kidTicketPrice;
+    order.equal_price =
+      adultTicketsQuantity * adultTicketPrice +
+      kidTicketsQuantity * kidTicketPrice;
     order.created = timeOfCreation;
     setPhpMyAdmin([...phpMyAdmin, order]);
   };
@@ -119,7 +122,7 @@ function App() {
             onClick={eventDate}
           ></input>
         </div>
-        <button type="button" className="form__button" onClick={createOrder}>
+        <button className="button" type="button" onClick={createOrder}>
           Оформить заказ
         </button>
       </form>
@@ -129,10 +132,11 @@ function App() {
           <p className="result__item">id</p>
           <p className="result__item">event_id</p>
           <p className="result__item">event_date</p>
-          <p className="result__item">ticket_adult_quantity</p>
-          <p className="result__item">ticket_kid_price</p>
-          <p className="result__item">ticket_kid_quantity</p>
-          <p className="result__item">ticket_adult_price</p>
+          <p className="result__item">adult_quantity</p>
+          <p className="result__item">kid_price</p>
+          <p className="result__item">kid_quantity</p>
+          <p className="result__item">adult_price</p>
+          <p className="result__item">equal_price</p>
           <p className="result__item">QRcode</p>
           <p className="result__item">created</p>
         </ul>
@@ -156,8 +160,9 @@ function App() {
                     </li>
 
                     <li className="result__item">{item.ticket_kid_price}</li>
+                    <li className="result__item">{item.equal_price}</li>
                     <li className="result__item">
-                      <BaracodeScaner />
+                      <QRCode />
                     </li>
                     <li className="result__item">{item.created}</li>
                   </ul>
@@ -167,12 +172,17 @@ function App() {
                     должен иметь id на случай редактирования
                   </p>
                   <button
+                    className="button"
                     type="button"
                     onClick={() => createAdultTickets(item)}
                   >
                     Развернуть билеты для взрослых
                   </button>
-                  <button type="button" onClick={() => createKidTickets(item)}>
+                  <button
+                    className="button"
+                    type="button"
+                    onClick={() => createKidTickets(item)}
+                  >
                     Развернуть билеты для детей
                   </button>
                   <ul className="result result__ticket">
@@ -191,7 +201,7 @@ function App() {
                         <li className="result__item">{element.type}</li>
                         <li className="result__item">{element.price}</li>
                         <li className="result__item">
-                          <BaracodeScaner />
+                          <QRCode />
                         </li>
                       </ul>
                     );
