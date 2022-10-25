@@ -48,3 +48,8 @@
 .result__item {
   width: 170px;
 }
+
+.result__ticket {
+  display: flex;
+  flex-direction: row;
+}

@@ -4,19 +4,17 @@ import BaracodeScaner from "./BaracodeScaner";
 
 function App() {
   const [adultTicketsQuantity, setAdultTicketsQuantity] = useState(0);
-  const adultTicketPrice = 1000;
   const [kidTicketsQuantity, setKidTicketsQuantity] = useState(0);
+  const adultTicketPrice = 1000;
   const kidTicketPrice = 500;
   const [id, setId] = useState(0);
   const [eventId, setEventId] = useState(477);
   const [timeOfCreation, setTimeOfCreation] = useState(null);
   const [phpMyAdmin, setPhpMyAdmin] = useState([]);
-  const [adultsTicketsArray, setAdultsTicketArray] = useState([]);
-  const [kidsTicketsArray, setKidsTicketArray] = useState([]);
-  const first = [];
-  const second = [];
+  const [allTickets, setAllTickets] = useState([]);
+  let ticketsArray = [];
 
-  // функция считыватель количества билетов
+  // функция создает дату и время начала создания заказа
   function eventDate() {
     if (adultTicketsQuantity > 0 || kidTicketsQuantity > 0) {
       const date = new Date().toLocaleDateString();
@@ -25,6 +23,7 @@ function App() {
     }
   }
 
+  // функция создает дату и время отправки заказа
   function createdTime() {
     const date = new Date().toLocaleDateString();
     const time = new Date().toLocaleTimeString();
@@ -58,27 +57,34 @@ function App() {
 
   // фунция сборщик каждого взрослого билета
   const createAdultTickets = (data) => {
-    if (data.tickets_adult_quantity > 0) {
-      for (let i = 1; i <= data.tickets_adult_quantity; i++) {
-        let ticket = [];
-        ticket.ticket_id = data.event_id + i;
-        ticket.type = "Adult";
-        ticket.price = data.ticket_adult_price;
-        return ticket;
-      }
+    for (let i = 1; i <= data.tickets_adult_quantity; i++) {
+      let ticket = {};
+      ticket.parentId = data.event_id;
+      ticket.id = data.event_id + i;
+      ticket.type = "Adult";
+      ticket.price = data.ticket_adult_price;
+      ticketsArray.push(ticket);
     }
+    return setAllTickets(ticketsArray);
+    // логическое завершение должно быть отправка на API данных билетов и очистка стейтов
+    // и потом получать с API необходимые данные
   };
 
-  // фунция сборщик каждого взрослого билета
+  // фунция сборщик каждого детского билета
   const createKidTickets = (data) => {
     if (data.tickets_kid_quantity > 0) {
       for (let i = 1; i <= data.tickets_kid_quantity; i++) {
         let ticket = [];
-        ticket.ticket_id = data.event_id + i;
+        ticket.parentId = data.event_id;
+        ticket.id = data.event_id + i + 300;
         ticket.type = "Kids";
         ticket.price = data.ticket_kid_price;
+        ticketsArray.push(ticket);
       }
     }
+    return setAllTickets(ticketsArray);
+    // логическое завершение должно быть отправка на API данных билетов и очистка стейтов
+    // и потом получать с API необходимые данные
   };
 
   return (
@@ -118,7 +124,7 @@ function App() {
         </button>
       </form>
       <div>
-        <h3>Результат</h3>
+        <p>Блок для отображения заказа</p>
         <ul className="result">
           <p className="result__item">id</p>
           <p className="result__item">event_id</p>
@@ -130,35 +136,67 @@ function App() {
           <p className="result__item">QRcode</p>
           <p className="result__item">created</p>
         </ul>
+        {/* Далее блок, который показывает наглядно что и в каком количестве создается
+        через запросы к API всё было бы гораздо симпотичнее */}
         {phpMyAdmin.length > 0
           ? phpMyAdmin.map((item) => {
               return (
-                <ul key={item.id} className="result">
-                  <li className="result__item">{item.id}</li>
-                  <li className="result__item">{item.event_id}</li>
-                  <li className="result__item">{item.event_date}</li>
-                  <li
-                    className="result__item"
+                <div key={item.id}>
+                  <ul className="result">
+                    <li className="result__item">{item.id}</li>
+                    <li className="result__item">{item.event_id}</li>
+                    <li className="result__item">{item.event_date}</li>
+                    <li className="result__item">
+                      {item.tickets_adult_quantity}
+                    </li>
+
+                    <li className="result__item">{item.ticket_adult_price}</li>
+                    <li className="result__item">
+                      {item.tickets_kid_quantity}
+                    </li>
+
+                    <li className="result__item">{item.ticket_kid_price}</li>
+                    <li className="result__item">
+                      <BaracodeScaner />
+                    </li>
+                    <li className="result__item">{item.created}</li>
+                  </ul>
+                  <p>
+                    Блок для отображения частей, из которых состоит заказ, так
+                    как заказ состоит из нескольких билетов и каждый из них
+                    должен иметь id на случай редактирования
+                  </p>
+                  <button
+                    type="button"
                     onClick={() => createAdultTickets(item)}
                   >
-                    {item.tickets_adult_quantity}
-                  </li>
-                  {createAdultTickets(item).map((i) => {
-                    return <p>{i.ticket.type}</p>;
+                    Развернуть билеты для взрослых
+                  </button>
+                  <button type="button" onClick={() => createKidTickets(item)}>
+                    Развернуть билеты для детей
+                  </button>
+                  <ul className="result result__ticket">
+                    <li className="result__item">parentId</li>
+                    <li className="result__item">id</li>
+                    <li className="result__item">type</li>
+                    <li className="result__item">price</li>
+                    <li className="result__item">QRCode</li>
+                  </ul>
+
+                  {allTickets.map((element) => {
+                    return (
+                      <ul className="result result__ticket" key={element.id}>
+                        <li className="result__item">{element.parentId}</li>
+                        <li className="result__item">{element.id}</li>
+                        <li className="result__item">{element.type}</li>
+                        <li className="result__item">{element.price}</li>
+                        <li className="result__item">
+                          <BaracodeScaner />
+                        </li>
+                      </ul>
+                    );
                   })}
-                  <li className="result__item">{item.ticket_adult_price}</li>
-                  <li
-                    className="result__item"
-                    onClick={() => createKidTickets(item)}
-                  >
-                    {item.tickets_kid_quantity}
-                  </li>
-                  <li className="result__item">{item.ticket_kid_price}</li>
-                  <li className="result__item">
-                    <BaracodeScaner />
-                  </li>
-                  <li className="result__item">{item.created}</li>
-                </ul>
+                </div>
               );
             })
           : ""}
